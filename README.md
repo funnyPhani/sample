@@ -32,3 +32,59 @@ accuracy_score(ytest,ypred)
 print(classification_report(ytest,ypred))
 sns.heatmap(confusion_matrix(ypred,ytest),annot = True,xticklabels = df4['species'].unique(),yticklabels = df4['species'].unique());
 ```
+
+
+
+```python
+try:
+    import os
+    os.makedirs("repImg",exist_ok=True)
+    import urllib      
+    import requests
+    from bs4 import BeautifulSoup
+    import warnings
+    
+    def downloadImage(url,name):
+        urllib.request.urlretrieve(url,name)
+
+    warnings.filterwarnings("ignore")
+    url = "https://indianrecipes.com/new_and_popular"
+#     url = f"https://indianrecipes.com/api?tm={time.time()}"
+    req = requests.get(url).content
+    soup = BeautifulSoup(req,"html.parser")
+    data = soup.findAll("div",attrs={"class":"links group"})
+    for i in data:
+        for j in i.findAll("a",{"class":"group"}):
+            for n in j.findAll("div",{"class":"text"}):
+                print(n.text.strip())
+                try:
+                    os.makedirs(os.path.join("repImg",n.text.strip()),exist_ok=True)
+                except Exception as e:
+                    print("error occured :",e)
+            print("https:"+j.get("href"))
+            purl = "https:"+j.get("href")
+            for k in j.findAll("div",{"class":"image"}):
+                for l in k.findAll("picture"):
+                    for m in l.findAll("source"):
+                            print("https:"+m.get("srcset"))  
+                            img = "https:"+m.get("srcset")
+                            downloadImage(img,f"repImg/{n.text.strip()}/{n.text.strip()}.jpg")
+            
+            req1 = requests.get(purl).content
+            soup1 = BeautifulSoup(req1,"html.parser")
+            data1 = soup1.findAll("div",{"class":'instructions'})
+            d = ""
+            for o in data1:
+                d+=o.text.strip()
+                d = "".join(d).strip().replace("\n"," ")
+                print(d)
+            with open(f"repImg/{n.text.strip()}/{n.text.strip()}.txt","w") as f:
+                f.writelines(f"Name :{n.text.strip()}"+"\n")
+                f.writelines(f"URL :{purl}"+"\n")
+                f.writelines(f"ImageURL :{img}"+"\n")
+                f.writelines(f"Description :{d}"+"\n")
+
+            print("-"*95)
+except Exception as e:
+    print("error occured :",e)
+```
