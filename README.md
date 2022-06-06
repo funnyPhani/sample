@@ -88,3 +88,35 @@ try:
 except Exception as e:
     print("error occured :",e)
 ```
+
+
+```python
+
+# Day-1 web-scrapping
+try:
+    !pip install bs4
+    import requests
+    from bs4 import BeautifulSoup
+    url = "https://indianrecipes.com/"
+    # get the data from the url
+    req = requests.get(url).content
+    # parser the content from the requested url
+    soup = BeautifulSoup(req,"html.parser")
+#     print(soup.prettify())
+    data = soup.findAll("div",{"class":"links group"})
+#     print(data.text)
+    for i in data:
+        for j in i.findAll("a",{"class":"group"}):
+            print("Dish Name :",j.text.strip())
+            print("URL :","https:"+j.get("href"))
+            for k in j.findAll("div",{"class":"image"}):
+                for l in k.findAll("picture"):
+                    for m in l.findAll("source"):
+                        print("Image URL :","https:"+m.get("srcset"))
+                        break
+                    print("-"*105)
+except Exception as e:
+    print("error occured :",e)
+    
+```
+  
