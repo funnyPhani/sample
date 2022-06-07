@@ -160,3 +160,40 @@ try:
 except Exception as e:
     print("error occured :",e)
 ```
+
+
+```python
+try:
+    import requests
+    from bs4 import BeautifulSoup
+    req = requests.get("http://books.toscrape.com/").content
+    soup = BeautifulSoup(req,"html.parser")
+    data = soup.findAll("li",{"class":"col-xs-6 col-sm-4 col-md-3 col-lg-3"})
+#     print(data)
+    for i in data:
+        for j in i.findAll("a"):
+            print("http://books.toscrape.com/"+j.get("href"))
+            burl = "http://books.toscrape.com/"+j.get("href")
+            break
+#         for k in i.findAll("h3"):
+#             print(k.text)
+#             break
+        req1 = requests.get(burl).content
+        soup1 = BeautifulSoup(req1,"html.parser")
+        data2 = soup1.findAll("div",{"class":"col-sm-6 product_main"})
+        for i in data2:
+            for j in i.findAll("h1"):
+                print(j.text.strip())
+                
+        data2 = soup1.findAll("div",{"class":"item active"})
+        for l in data2:
+            for m in l.findAll("img"):
+                print("http://books.toscrape.com/"+m.get("src"))
+#                 print("-"*25)
+        data3 = soup1.findAll("p")
+        for i in data3:
+            print(i.text.strip())
+        print("-"*25)
+except Exception as e:
+    print("error occured :",e)
+ ```
