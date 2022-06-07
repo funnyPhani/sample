@@ -35,6 +35,9 @@ sns.heatmap(confusion_matrix(ypred,ytest),annot = True,xticklabels = df4['specie
 
 
 
+
+
+
 ```python
 try:
     import os
@@ -120,3 +123,40 @@ except Exception as e:
     
 ```
   
+```python
+# Day-2 web-scrapping
+try:
+#     !pip install bs4
+    import requests
+    import os
+    from bs4 import BeautifulSoup
+    import urllib
+     # new folder syntax
+#     os.makedirs("vantalu",exist_ok=True)
+    
+    def downloadImage(url,name):
+        urllib.request.urlretrieve(url,name)
+    url = "https://indianrecipes.com/new_and_popular"
+#     url = "https://indianrecipes.com/"
+    # get the data from the url
+    req = requests.get(url).content
+    # parser the content from the requested url
+    soup = BeautifulSoup(req,"html.parser")
+#     print(soup.prettify())
+    data = soup.findAll("div",{"class":"links group"})
+#     print(data.text)
+    for i in data:
+        for j in i.findAll("a",{"class":"group"}):
+            print("Dish Name :",j.text.strip())
+            os.makedirs(os.path.join("vantalu",j.text.strip()),exist_ok=True)
+            print("URL :","https:"+j.get("href"))
+            for k in j.findAll("div",{"class":"image"}):
+                for l in k.findAll("picture"):
+                    for m in l.findAll("source"):
+                        print("Image URL :","https:"+m.get("srcset"))
+                        downloadImage("https:"+m.get("srcset"),f"vantalu/{j.text.strip()}/{j.text.strip()}.jpg")
+                        break
+                    print("-"*105)
+except Exception as e:
+    print("error occured :",e)
+```
