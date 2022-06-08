@@ -197,3 +197,38 @@ try:
 except Exception as e:
     print("error occured :",e)
  ```
+ 
+  ```python
+ try:
+    import pyforest
+    import requests
+    from bs4 import BeautifulSoup
+    import warnings
+    warnings.filterwarnings("ignore")
+    url = "https://timesofindia.indiatimes.com/topic/category-wise/news"
+    req = requests.get(url)
+#     print(req)
+    soup = BeautifulSoup(req.content,"html.parser")
+    data = soup.findAll("div",{"class":"Mc7GB"})
+    D = {}
+    for pk,i in enumerate(data):
+        d = {}
+        for j in i.findAll("div",{"class":"EW1Mb _3v379"}):
+#             print("Title :",j.text.strip())
+            d["title"] = j.text.strip()
+        for k in i.findAll("a"):
+#             print("URL :",k.get("href"))
+            d["URL"] = k.get("href")
+        for l in i.findAll("div",{"class":"_13Z9I"}):
+            for m in l.findAll("img"):
+#                 print("Image URL :",m.get("src"))
+                d["Image URL"] = m.get("src")
+        for n in i.findAll("p",{'class':'itdvH _3v379'}):
+#             print("Description :",n.text.strip())
+            d["Description"] = n.text.strip()
+#             print("-"*160) 
+        D[pk] = d
+
+except Exception as e:
+    print("error occured :",e)
+ ```
