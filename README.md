@@ -199,13 +199,15 @@ except Exception as e:
  ```
  
   ```python
- try:
+try:
     import pyforest
     import requests
     from bs4 import BeautifulSoup
     import warnings
     warnings.filterwarnings("ignore")
     url = "https://timesofindia.indiatimes.com/topic/category-wise/news"
+    intrest = input("enter ur category")
+    url = f"https://timesofindia.indiatimes.com/topic/{intrest}"
     req = requests.get(url)
 #     print(req)
     soup = BeautifulSoup(req.content,"html.parser")
@@ -226,9 +228,19 @@ except Exception as e:
         for n in i.findAll("p",{'class':'itdvH _3v379'}):
 #             print("Description :",n.text.strip())
             d["Description"] = n.text.strip()
+        for o in i.findAll("div",{"class":"hVLK8"}):
+#             s = o.text.strip()
+#             s = s.split("/")[1].strip()
+            d['Time'] = o.text.strip()
+#             del s
 #             print("-"*160) 
         D[pk] = d
-
+        del d
+    print("sample of DataSet :")
+    print("-"*165)
+    display(pd.DataFrame(D).T.head(2))
+    print(f"{intrest} data fetched successfully.")
+    print("-"*165)
 except Exception as e:
     print("error occured :",e)
  ```
