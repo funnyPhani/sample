@@ -299,3 +299,30 @@ try:
 except Exception as e:
   print("error occured :",e)
   ```
+
+
+
+```python
+# download img from a web
+
+try:
+    
+    import requests
+    from bs4 import BeautifulSoup
+    for i in range(1,10):
+        url = f"https://www.indiatoday.in/science?page={i}"
+        req = requests.get(url).content
+        soup = BeautifulSoup(req,"html.parser")
+        data = soup.findAll("div",{"class":"catagory-listing"})
+        for i in data:
+            for j in i.findAll('div',{"class":"pic"}):
+                for k in j.findAll("img"):
+                    print(k.get("src"))
+        print()
+
+
+#     print(soup.prettify())
+#     print(req)
+except Exception as e:
+    print(e)
+```
